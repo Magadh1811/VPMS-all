@@ -6,7 +6,7 @@ This backend is **deployed on Railway**, and the database is hosted on **Supabas
 
 ---
 
-## 🧠 Overview
+## Overview
 
 * **Language:** Go (Golang)
 * **Framework:** Gin
@@ -16,7 +16,7 @@ This backend is **deployed on Railway**, and the database is hosted on **Supabas
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 Backend-Go/
@@ -68,7 +68,7 @@ Backend-Go/
 
 ---
 
-## 🔐 Auth Flow
+## Auth Flow
 
 1. **Signup** → create user → (hash stored)
 2. **Login** → returns **JWT** in response; use `Authorization: Bearer <token>` for protected routes
