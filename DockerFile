@@ -1,0 +1,37 @@
+# ---------- build stage ----------
+FROM golang:1.22 AS builder
+
+WORKDIR /app
+
+# Cache deps first
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the source
+COPY . .
+
+# Build a static binary for Linux (no CGO)
+# -s -w strips symbols to reduce size
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -ldflags="-s -w" -o /server ./cmd/server
+
+# ---------- run stage ----------
+FROM gcr.io/distroless/static:nonroot
+
+# Optional: set release mode for Gin and default port
+ENV GIN_MODE=release
+ENV PORT=8080
+
+WORKDIR /
+
+# Copy the binary from builder
+COPY --from=builder /server /server
+
+# Expose the app port (Fly will map 80/443 in fly.toml)
+EXPOSE 8080
+
+# Run as non-root
+USER nonroot:nonroot
+
+# Start the server
+ENTRYPOINT ["/server"]
